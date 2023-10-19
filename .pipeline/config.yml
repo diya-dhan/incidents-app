@@ -1,0 +1,65 @@
+general:
+  buildTool: "npm"
+  chartPath: chart
+service:
+  buildToolVersion: "N18"
+stages:
+  Build:
+    npmExecuteLint: true
+  Additional Unit Tests:
+    npmExecuteScripts: true
+  Acceptance:
+    kubernetesDeploy: false
+  Compliance:
+    sonarExecuteScan: false
+  Release:
+    kubernetesDeploy: true
+    deploymentName: incidents-mgmt
+    kubeConfigFileCredentialsId: kube-config-release
+    namespace: kyma-cicd
+    # additionalParameters:
+    #   - --set
+    #   - customer.defined.release.imagePullSecret.name=secrets-release
+steps:
+  npmExecuteLint:
+    failOnError: true
+  npmExecuteScripts:
+    runScripts:
+      - "test"
+  buildExecute:
+    npmRunScripts: [ 'cds-build' ]
+    npmInstall: false
+    cnbBuild: true
+    helmExecute: true
+  cnbBuild:
+    containerRegistryUrl: 'https://index.docker.io'
+    dockerConfigJsonCredentialsId: docker-config
+    multipleImages:
+      - path: gen/srv
+        containerImageName: diyadhansap/incidents-mgmt-srv-cicd
+        containerImageAlias: diyadhansap/incidents-mgmt-srv-cicd
+        containerImageTag: latest
+      - path: gen/db
+        containerImageName: diyadhansap/incidents-mgmt-hana-deployer-cicd
+        containerImageAlias: diyadhansap/incidents-mgmt-hana-deployer-cicd
+        containerImageTag: latest
+      - path: app/incidents
+        containerImageName: diyadhansap/incidents-mgmt-html5-deployer-cicd
+        containerImageAlias: diyadhansap/incidents-mgmt-html5-deployer-cicd
+        containerImageTag: latest
+      # - path: gen/app
+      #   containerImageName: image/name.with.dot
+      #   containerImageAlias: image/name_with_dot
+      #   containerImageTag: v1.0.0
+  helmExecute:
+    helmCommand: dependency
+    dependency: update
+  # kubernetesDeploy:
+    # valuesMapping:
+    #   srv.image.repository: image.diyadhansap/incidents-mgmt-srv-cicd.repository
+    #   srv.image.tag: image.diyadhansap/incidents-mgmt-srv-cicd.tag
+    #   hana-deployer.image.repository: image.diyadhansap/incidents-mgmt-hana-deployer-cicd.repository
+    #   hana-deployer.image.tag: image.diyadhansap/incidents-mgmt-hana-deployer-cicd.tag
+    #   html5-apps-deployer.image.repository: image.diyadhansap/incidents-mgmt-html5-deployer-cicd.repository
+    #   html5-apps-deployer.image.tag: image.diyadhansap/incidents-mgmt-html5-deployer-cicd.tag
+    # helmDeployWaitSeconds: 1200
