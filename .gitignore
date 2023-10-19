@@ -35,7 +35,7 @@ mta_archives/
 
 # SAPUI5
 app/*/dist
-resources/
+# resources/
 
 # VitePress
 _docs/.vitepress/cache

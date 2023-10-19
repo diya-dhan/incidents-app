@@ -9,7 +9,11 @@
     ],
     "main": "webapp/index.html",
     "scripts": {
+        "start": "node node_modules/@sap/html5-app-deployer/index.js",
         "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+    },
+    "dependencies": { 
+        "@sap/html5-app-deployer": "5.0.0" 
     },
     "devDependencies": { }
 }
