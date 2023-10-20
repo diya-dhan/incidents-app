@@ -17,9 +17,9 @@ stages:
     deploymentName: incidents-mgmt
     kubeConfigFileCredentialsId: kube-config-release
     namespace: kyma-cicd
-    # additionalParameters:
-    #   - --set
-    #   - customer.defined.release.imagePullSecret.name=secrets-release
+    additionalParameters:
+      - --set-file
+      - xsuaa.jsonParameters=xs-security.json
 steps:
   npmExecuteLint:
     failOnError: true
