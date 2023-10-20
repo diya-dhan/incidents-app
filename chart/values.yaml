@@ -1,7 +1,6 @@
 global:
-  domain: null
-  imagePullSecret:
-    {}
+  domain: c-73a1a34.kyma.ondemand.com
+
 srv:
   bindings:
     db:
@@ -11,7 +10,7 @@ srv:
     destination:
       serviceInstanceName: destination
   image:
-    repository: <your-container-registry>/incidents-srv
+    repository: diyadhansap/incidents-mgmt-srv-cicd
     tag: latest
   resources:
     limits:
@@ -28,7 +27,7 @@ srv:
       path: /
 hana-deployer:
   image:
-    repository: <your-container-registry>/incidents-hana-deployer
+    repository: diyadhansap/incidents-mgmt-hana-deployer-cicd
     tag: latest
   bindings:
     hana:
@@ -47,19 +46,19 @@ xsuaa:
   serviceOfferingName: xsuaa
   servicePlanName: application
   parameters:
-    xsappname: incidents
+    xsappname: incidents-diya
     tenant-mode: dedicated
 html5-apps-repo-host:
   serviceOfferingName: html5-apps-repo
   servicePlanName: app-host
 html5-apps-deployer:
   env:
-    SAP_CLOUD_SERVICE: null
+    SAP_CLOUD_SERVICE: incidents
   envFrom:
     - configMapRef:
         name: "{{ .Release.Name }}-html5-apps-deployer-configmap"
   image:
-    repository: <your-container-registry>/incidents-html5-deployer
+    repository: diyadhansap/incidents-mgmt-html5-deployer-cicd
     tag: latest
   bindings:
     xsuaa:
@@ -76,7 +75,8 @@ html5-apps-deployer:
       cpu: 1000m
       memory: 1G
 backendDestinations:
-  {}
+  srv-api:
+    service: srv
 destination:
   serviceOfferingName: destination
   servicePlanName: lite
