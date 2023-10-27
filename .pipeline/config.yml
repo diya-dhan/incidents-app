@@ -6,6 +6,8 @@ service:
 stages:
   Build:
     npmExecuteLint: true
+    runLast:
+      command: "npm show @cap-js/sqlite version"
   Additional Unit Tests:
     npmExecuteScripts: true
   Acceptance:
